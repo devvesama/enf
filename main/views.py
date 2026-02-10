@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404  # Добавили get_object_or_404
 from django.views.generic import TemplateView, DetailView 
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
@@ -21,21 +21,21 @@ class IndexView(TemplateView):
         context = self.get_context_data(**kwargs)
         if request.headers.get('HX-Request'):
             return TemplateResponse(request, 'main/home_content.html', context)
-        return TemplateResponse(request. self.template_name, context)    
+        return TemplateResponse(request, self.template_name, context)    
 
 
 class CatalogView(TemplateView):        
-    template = 'main/base.html'
+    template_name = 'main/base.html' # Добавьте _name
 
     FILTER_MAPPING = {
         'color': lambda queryset, value: queryset.filter(color__iexact=value),
         'min_price': lambda queryset, value: queryset.filter(price__gte=value),
         'max_price': lambda queryset, value: queryset.filter(price__lte=value),
-        'size': lambda queryset, value: queryset.filter(product_size__size__name=value),
+        'size': lambda queryset, value: queryset.filter(product_sizes__size__name=value),
     }
 
     def get_context_data(self, **kwargs):
-        context = super
+        context = super().get_context_data(**kwargs)
         category_slug = kwargs.get('category_slug')
         categories = Category.objects.all()
         products = Product.objects.all().order_by('-created_at')
@@ -106,9 +106,9 @@ class ProductDetailView(DetailView):
 
 
     def get(self, request, *args, **kwargs):    
-        self.object = self.get.object()
+        self.object = self.get_object()
         context = self.get_context_data(**kwargs)
-        if request.header.get('HX-Request'):
+        if request.headers.get('HX-Request'):
             return TemplateResponse(request, 'main/product_detail_content.html', context)
         raise TemplateResponse(request, self.template_name, context)    
 
