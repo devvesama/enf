@@ -80,13 +80,18 @@ class CatalogView(TemplateView):
     def get(self, request, *args, **kwargs):    
         context = self.get_context_data(**kwargs)
         if request.headers.get('HX-Request'):
-            if context.get('show_search'):
+            # 1. Проверяем, нужно ли показать поле ввода
+            if request.GET.get('show_search') == 'true': # Лучше проверять GET напрямую
                 return TemplateResponse(request, 'main/search_input.html', context)
-            elif context.get('reset_search'):    
-                context['reset_search'] = True
-                return TemplateResponse(request, 'main/search_button.html',{} )
+            
+            # 2. ИСПРАВЛЕНИЕ: Проверяем GET запрос напрямую, а не context
+            elif request.GET.get('reset_search') == 'true':    
+                return TemplateResponse(request, 'main/search_button.html', {})
+            
+            # 3. Логика для фильтров и каталога
             template = 'main/filter_modal.html' if request.GET.get('show_filters') == 'true' else 'main/catalog.html'    
             return TemplateResponse(request, template, context) 
+            
         return TemplateResponse(request, self.template_name, context)
 
 class ProductDetailView(DetailView):
