@@ -48,7 +48,7 @@ class AddToCartView(CartMixin, View):
 
         form = AddToCartForm(request.POST, product=product)
 
-        if not forms.is_valid():
+        if not form.is_valid():
             return JsonResponse({
                 'error': 'Invalid form data',
                 'errors': form.errors,
@@ -70,7 +70,7 @@ class AddToCartView(CartMixin, View):
 
         quantity = form.cleaned_data['quantity']        
         if product_size.stock <quantity:
-            return jsonResponse({
+            return JsonResponse({
                 'error': f'Only {product_size.stock} items available'
             }, status=400)
 

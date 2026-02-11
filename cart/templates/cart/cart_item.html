@@ -51,8 +51,7 @@
                     hx-post="{% url 'cart:remove_item' item.id %}"
                     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                     hx-target="#cart-modal"
-                    hx-swap="outerHTML"
-                    hx-confirm="Remove this item from cart?"
+                    hx-swap="outerHTML"                    
                     hx-trigger="click"
                     hx-on::after-request="console.log('Remove Item {{ item.id }} Request Completed');">
                 Remove
