@@ -30,9 +30,9 @@ def login_view(request):
             user = form.get_user()
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('main:index')
-        else:    
-            form = CustomUserLoginForm()
-        return render(request, 'users/login.html', {'form': form})    
+    else:    
+        form = CustomUserLoginForm()
+    return render(request, 'users/login.html', {'form': form})    
 
 
 @login_required(login_url='/users/login')        
@@ -44,16 +44,16 @@ def profile_view(request):
             if request.headers.get("HX-Request"):
                 return HttpResponse(headers={'HX-Redirect': reverse('users:profile')})
             return redirect('users:profile')    
-        else:    
-            form = CustomUserUpdateForm(instance=request.user)
+    else:    
+        form = CustomUserUpdateForm(instance=request.user)
 
-        recommended_products = Product.objects.all().order_by('id')[:3]    
+    recommended_products = Product.objects.all().order_by('id')[:3]    
 
-        return TemplateResponse(request, 'users/profile.html', {
-            'form': form,
-            'user': request.user,
-            'recommended_products': recommended_products
-        })
+    return TemplateResponse(request, 'users/profile.html', {
+        'form': form,
+        'user': request.user,
+        'recommended_products': recommended_products
+    })
 
 
 @login_required(login_url='/users/login')
